@@ -8,7 +8,7 @@
     tools:context=".QrActivity">
 
     <TextView
-        android:id="@+id/textViewTitle"
+        android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -17,7 +17,7 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/textViewSubtitle"
+        android:id="@+id/tvSubtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -40,7 +40,7 @@
             android:padding="16dp">
 
             <ImageView
-                android:id="@+id/imageViewQr"
+                android:id="@+id/imgQr"
                 android:layout_width="300dp"
                 android:layout_height="300dp"
                 android:contentDescription="Código QR del miembro" />

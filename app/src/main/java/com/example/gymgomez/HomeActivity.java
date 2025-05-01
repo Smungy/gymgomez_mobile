@@ -20,11 +20,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity {
-    private TextView textViewWelcome;
-    private Button buttonMiembro;
-    private Button buttonMembresia;
-    private Button buttonQr;
-    private Button buttonLogout;
+    private TextView tvWelcome;
+    private Button btnMiembro;
+    private Button btnMembresia;
+    private Button btnQr;
+    private Button btnLogout;
     private static final String TAG = "HomeActivity";
 
     @Override
@@ -32,16 +32,16 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        textViewWelcome = findViewById(R.id.textViewWelcome);
-        buttonMiembro = findViewById(R.id.buttonMiembro);
-        buttonMembresia = findViewById(R.id.buttonMembresia);
-        buttonQr = findViewById(R.id.buttonQr);
-        buttonLogout = findViewById(R.id.buttonLogout);
+        tvWelcome = findViewById(R.id.tvWelcome);
+        btnMiembro = findViewById(R.id.btnMiembro);
+        btnMembresia = findViewById(R.id.btnMembresia);
+        btnQr = findViewById(R.id.btnQr);
+        btnLogout = findViewById(R.id.btnLogout);
 
         // Cargar datos del miembro
         loadMiembroData();
 
-        buttonMiembro.setOnClickListener(new View.OnClickListener() {
+        btnMiembro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivity.this, MiembroActivity.class);
@@ -49,7 +49,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        buttonMembresia.setOnClickListener(new View.OnClickListener() {
+        btnMembresia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivity.this, MembresiaActivity.class);
@@ -57,7 +57,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        buttonQr.setOnClickListener(new View.OnClickListener() {
+        btnQr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivity.this, QrActivity.class);
@@ -65,7 +65,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        buttonLogout.setOnClickListener(new View.OnClickListener() {
+        btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 logout();
@@ -97,10 +97,10 @@ public class HomeActivity extends AppCompatActivity {
                         String apellido = miembro.getApellido() != null ? miembro.getApellido() : "";
 
                         Log.d(TAG, "Datos del miembro obtenidos: " + nombre + " " + apellido);
-                        textViewWelcome.setText("Bienvenido, " + nombre + " " + apellido);
+                        tvWelcome.setText("Bienvenido, " + nombre + " " + apellido);
                     } else {
                         Log.e(TAG, "El objeto miembro es nulo");
-                        textViewWelcome.setText("Bienvenido");
+                        tvWelcome.setText("Bienvenido");
                         Toast.makeText(HomeActivity.this, "No se pudo obtener la información del miembro", Toast.LENGTH_SHORT).show();
                     }
                 } else {
@@ -112,7 +112,7 @@ public class HomeActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    textViewWelcome.setText("Bienvenido");
+                    tvWelcome.setText("Bienvenido");
                     Toast.makeText(HomeActivity.this, "Error al cargar datos del miembro: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -120,7 +120,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<MiembroResponse> call, Throwable t) {
                 Log.e(TAG, "Error de conexión: " + t.getMessage(), t);
-                textViewWelcome.setText("Bienvenido");
+                tvWelcome.setText("Bienvenido");
                 Toast.makeText(HomeActivity.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

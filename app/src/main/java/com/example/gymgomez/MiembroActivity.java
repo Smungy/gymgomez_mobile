@@ -16,9 +16,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MiembroActivity extends AppCompatActivity {
-    private TextView textViewId;
-    private TextView textViewNombre;
-    private TextView textViewApellido;
+    private TextView tvId;
+    private TextView tvNombre;
+    private TextView tvApellido;
     // Más TextViews según la respuesta de la API
 
     @Override
@@ -26,10 +26,9 @@ public class MiembroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_miembro);
 
-        textViewId = findViewById(R.id.textViewId);
-        textViewNombre = findViewById(R.id.textViewNombre);
-        textViewApellido = findViewById(R.id.textViewApellido);
-        // Inicializar más TextViews
+        tvId = findViewById(R.id.tvId);
+        tvNombre = findViewById(R.id.tvNombre);
+        tvApellido = findViewById(R.id.tvApellido);
 
         loadMiembroData();
     }
@@ -53,9 +52,9 @@ public class MiembroActivity extends AppCompatActivity {
                     MiembroResponse.Miembro miembro = responseData.getMiembro();
 
                     if (miembro != null) {
-                        textViewId.setText("ID: " + miembro.getId());
-                        textViewNombre.setText("Nombre: " + miembro.getNombre());
-                        textViewApellido.setText("Apellido: " + miembro.getApellido());
+                        tvId.setText("ID: " + miembro.getId());
+                        tvNombre.setText("Nombre: " + miembro.getNombre());
+                        tvApellido.setText("Apellido: " + miembro.getApellido());
                         // Mostrar más datos según la respuesta
                     } else {
                         Log.e("API_RESPONSE", "El objeto miembro es nulo");

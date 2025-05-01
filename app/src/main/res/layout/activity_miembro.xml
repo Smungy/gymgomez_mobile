@@ -8,7 +8,7 @@
     tools:context=".MiembroActivity">
 
     <TextView
-        android:id="@+id/textViewTitle"
+        android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -32,7 +32,7 @@
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/textViewId"
+                android:id="@+id/tvId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -40,7 +40,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/textViewNombre"
+                android:id="@+id/tvNombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -48,7 +48,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/textViewApellido"
+                android:id="@+id/tvApellido"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"

@@ -21,14 +21,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class QrActivity extends AppCompatActivity {
-    private ImageView imageViewQr;
+    private ImageView imgQr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr);
 
-        imageViewQr = findViewById(R.id.imageViewQr);
+        imgQr = findViewById(R.id.imgQr);
 
         loadQrData();
     }
@@ -63,7 +63,7 @@ public class QrActivity extends AppCompatActivity {
             BitMatrix bitMatrix = multiFormatWriter.encode(qrCode, BarcodeFormat.QR_CODE, 500, 500);
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
-            imageViewQr.setImageBitmap(bitmap);
+            imgQr.setImageBitmap(bitmap);
         } catch (WriterException e) {
             e.printStackTrace();
             Toast.makeText(this, "Error al generar el código QR", Toast.LENGTH_SHORT).show();
