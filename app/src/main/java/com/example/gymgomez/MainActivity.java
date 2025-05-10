@@ -16,6 +16,9 @@ import com.example.gymgomez.modelos.LoginRequest;
 import com.example.gymgomez.modelos.LoginResponse;
 import com.example.gymgomez.networking.RetrofitClient;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import retrofit2.Call;
@@ -23,9 +26,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
-    private EditText editTextId;
-    private EditText editTextPassword;
-    private Button buttonLogin;
+    private static final String TAG = "MainActivity";
+    private EditText etId;
+    private EditText etPassword;
+    private Button btnLogin;
     private ProgressBar progressBar;
 
     @Override
@@ -33,12 +37,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        editTextId = findViewById(R.id.editTextId);
-        editTextPassword = findViewById(R.id.editTextPassword);
-        buttonLogin = findViewById(R.id.buttonLogin);
-        progressBar = findViewById(R.id.progressBar);
+        // Comprobar si ya hay una sesión activa
+        if (isUserLoggedIn()) {
+            navigateToHome();
+            return;
+        }
 
-        buttonLogin.setOnClickListener(new View.OnClickListener() {
+        initializeViews();
+        setListeners();
+    }
+
+    private boolean isUserLoggedIn() {
+        SharedPreferences preferences = getSharedPreferences("gym_app", MODE_PRIVATE);
+        String token = preferences.getString("token", null);
+        return token != null && !token.isEmpty();
+    }
+
+    private void initializeViews() {
+        etId = findViewById(R.id.etId);
+        etPassword = findViewById(R.id.etPassword);
+        btnLogin = findViewById(R.id.btnLogin);
+        progressBar = findViewById(R.id.progressBar);
+    }
+
+    private void setListeners() {
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 doLogin();
@@ -47,11 +70,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void doLogin() {
-        String idStr = editTextId.getText().toString().trim();
-        String password = editTextPassword.getText().toString().trim();
+        String idStr = etId.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
 
         if (idStr.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
+            showMessage("Por favor, completa todos los campos");
             return;
         }
 
@@ -59,60 +82,118 @@ public class MainActivity extends AppCompatActivity {
         try {
             id = Integer.parseInt(idStr);
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "ID debe ser un número", Toast.LENGTH_SHORT).show();
+            showMessage("ID debe ser un número");
             return;
         }
 
-        progressBar.setVisibility(View.VISIBLE);
-
+        showLoading(true);
         LoginRequest loginRequest = new LoginRequest(id, password, "android_app");
 
         RetrofitClient.getApiService().login(loginRequest).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                progressBar.setVisibility(View.GONE);
+                showLoading(false);
 
                 if (response.isSuccessful() && response.body() != null) {
-                    LoginResponse loginResponse = response.body();
-
-                    // Guardar token en SharedPreferences
-                    SharedPreferences preferences = getSharedPreferences("gym_app", MODE_PRIVATE);
-                    preferences.edit().putString("token", "Bearer " + loginResponse.getToken()).apply();
-
-                    // Verificar si requiere cambio de contraseña o es primer login
-                    if (loginResponse.isFirstLogin() || loginResponse.isRequiresPasswordChange()) {
-                        // Ir a la pantalla de cambio de contraseña
-                        Intent intent = new Intent(MainActivity.this, ChangePasswordActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        // Ir a la pantalla principal (caso de éxito normal)
-                        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
+                    handleSuccessfulLogin(response.body());
                 } else {
-                    // Manejar error de respuesta
-                    try {
-                        String errorBody = response.errorBody() != null ?
-                                response.errorBody().string() : "Cuerpo de error vacío";
-                        Toast.makeText(MainActivity.this,
-                                "Error: " + response.code() + " - " + errorBody,
-                                Toast.LENGTH_LONG).show();
-                        Log.e("LoginError", "Code: " + response.code() + " Body: " + errorBody);
-                    } catch (IOException e) {
-                        Toast.makeText(MainActivity.this,
-                                "Error de inicio de sesión: " + response.code(),
-                                Toast.LENGTH_SHORT).show();
-                    }
+                    handleLoginError(response);
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                Toast.makeText(MainActivity.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                showLoading(false);
+                Log.e(TAG, "Error de conexión", t);
+                showMessage("No se pudo conectar al servidor. Verifica tu conexión a internet.");
             }
         });
+    }
+
+    private void handleSuccessfulLogin(LoginResponse loginResponse) {
+        // Guardar token en SharedPreferences
+        saveAuthToken(loginResponse.getToken());
+
+        // Verificar si requiere cambio de contraseña o es primer login
+        if (loginResponse.isFirstLogin() || loginResponse.isRequiresPasswordChange()) {
+            navigateToChangePassword();
+        } else {
+            navigateToHome();
+        }
+    }
+
+    private void handleLoginError(Response<LoginResponse> response) {
+        // El backend Laravel usa código 422 para ValidationException (credenciales incorrectas)
+        if (response.code() == 422) {
+            showMessage("ID o contraseña incorrectos. Intenta de nuevo.");
+            return;
+        }
+
+        try {
+            if (response.errorBody() != null) {
+                String errorBody = response.errorBody().string();
+                Log.d(TAG, "Error body: " + errorBody);
+
+                // Intentar parsear el error JSON para obtener el mensaje de error específico
+                // Laravel envía típicamente {"message":"...", "errors":{...}}
+                try {
+                    JSONObject errorJson = new JSONObject(errorBody);
+
+                    // Intentar obtener mensaje de error específico de credentials
+                    if (errorJson.has("errors") && errorJson.getJSONObject("errors").has("credentials")) {
+                        String credentialsError = errorJson.getJSONObject("errors")
+                                .getJSONArray("credentials").getString(0);
+                        showMessage(credentialsError);
+                        return;
+                    }
+
+                    // Intentar obtener mensaje general
+                    if (errorJson.has("message")) {
+                        String message = errorJson.getString("message");
+                        if (!message.isEmpty()) {
+                            showMessage(message);
+                            return;
+                        }
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error al parsear JSON de error", e);
+                }
+            }
+
+            // Mensaje predeterminado para credenciales incorrectas
+            showMessage("ID o contraseña incorrectos. Intenta de nuevo.");
+
+        } catch (IOException e) {
+            showMessage("Error en el inicio de sesión. Por favor intenta más tarde.");
+            Log.e(TAG, "Error al procesar respuesta de error", e);
+        }
+    }
+
+    private void saveAuthToken(String token) {
+        SharedPreferences preferences = getSharedPreferences("gym_app", MODE_PRIVATE);
+        preferences.edit().putString("token", "Bearer " + token).apply();
+    }
+
+    private void navigateToChangePassword() {
+        Intent intent = new Intent(MainActivity.this, ChangePasswordActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void navigateToHome() {
+        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void showLoading(boolean isLoading) {
+        progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        btnLogin.setEnabled(!isLoading);
+        etId.setEnabled(!isLoading);
+        etPassword.setEnabled(!isLoading);
+    }
+
+    private void showMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

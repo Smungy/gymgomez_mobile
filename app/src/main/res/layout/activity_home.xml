@@ -8,7 +8,7 @@
     tools:context=".HomeActivity">
 
     <TextView
-        android:id="@+id/textViewWelcome"
+        android:id="@+id/tvWelcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -17,7 +17,7 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/textViewSubtitle"
+        android:id="@+id/tvSubtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -31,21 +31,21 @@
         android:gravity="center_vertical">
 
         <Button
-            android:id="@+id/buttonMiembro"
+            android:id="@+id/btnMiembro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Ver Mi Información" />
 
         <Button
-            android:id="@+id/buttonMembresia"
+            android:id="@+id/btnMembresia"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Ver Mi Membresía" />
 
         <Button
-            android:id="@+id/buttonQr"
+            android:id="@+id/btnQr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -54,7 +54,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/buttonLogout"
+        android:id="@+id/btnLogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"

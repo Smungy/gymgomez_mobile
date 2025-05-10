@@ -17,23 +17,22 @@ import retrofit2.Response;
 
 public class MembresiaActivity extends AppCompatActivity {
     private static final String TAG = "MembresiaActivity";
-    private TextView textViewTipo;
-    private TextView textViewFechaInicio;
-    private TextView textViewFechaFin;
-    private TextView textViewEstado;
-    private TextView textViewDiasRestantes;
+    private TextView tvTipo;
+    private TextView tvFechaInicio;
+    private TextView tvFechaFin;
+    private TextView tvEstado;
+    private TextView tvDiasRestantes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_membresia);
 
-        textViewTipo = findViewById(R.id.textViewTipo);
-        textViewFechaInicio = findViewById(R.id.textViewFechaInicio);
-        textViewFechaFin = findViewById(R.id.textViewFechaFin);
-        // Si tienes estos campos en tu layout, descomenta estas líneas
-        textViewEstado = findViewById(R.id.textViewEstado);
-        textViewDiasRestantes = findViewById(R.id.textViewDiasRestantes);
+        tvTipo = findViewById(R.id.tvTipo);
+        tvFechaInicio = findViewById(R.id.tvFechaInicio);
+        tvFechaFin = findViewById(R.id.tvFechaFin);
+        tvEstado = findViewById(R.id.tvEstado);
+        tvDiasRestantes = findViewById(R.id.tvDiasRestantes);
 
         loadMembresiaData();
     }
@@ -63,17 +62,17 @@ public class MembresiaActivity extends AppCompatActivity {
                     String fechaInicio = membresia.getFechaInscripcion() != null ? membresia.getFechaInscripcion() : "No disponible";
                     String fechaFin = membresia.getFechaVencimiento() != null ? membresia.getFechaVencimiento() : "No disponible";
 
-                    textViewTipo.setText("Tipo de membresía: " + tipoText);
-                    textViewFechaInicio.setText("Fecha de inscripción: " + fechaInicio);
-                    textViewFechaFin.setText("Fecha de vencimiento: " + fechaFin);
+                    tvTipo.setText("Tipo de membresía: " + tipoText);
+                    tvFechaInicio.setText("Fecha de inscripción: " + fechaInicio);
+                    tvFechaFin.setText("Fecha de vencimiento: " + fechaFin);
 
 
-                    if (textViewEstado != null && membresia.getEstado() != null) {
-                        textViewEstado.setText("Estado: " + membresia.getEstado());
+                    if (tvEstado != null && membresia.getEstado() != null) {
+                        tvEstado.setText("Estado: " + membresia.getEstado());
                     }
 
-                    if (textViewDiasRestantes != null) {
-                        textViewDiasRestantes.setText("Días restantes: " + membresia.getDiasRestantes());
+                    if (tvDiasRestantes != null) {
+                        tvDiasRestantes.setText("Días restantes: " + membresia.getDiasRestantes());
                     }
                 } else {
                     try {

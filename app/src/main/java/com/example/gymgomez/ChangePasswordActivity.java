@@ -20,10 +20,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ChangePasswordActivity extends AppCompatActivity {
-    private EditText editTextCurrentPassword;
-    private EditText editTextNewPassword;
-    private EditText editTextConfirmPassword;
-    private Button buttonChangePassword;
+    private EditText etCurrentPassword;
+    private EditText etNewPassword;
+    private EditText etConfirmPassword;
+    private Button btnChangePassword;
     private ProgressBar progressBar;
 
     @Override
@@ -31,13 +31,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
 
-        editTextCurrentPassword = findViewById(R.id.editTextCurrentPassword);
-        editTextNewPassword = findViewById(R.id.editTextNewPassword);
-        editTextConfirmPassword = findViewById(R.id.editTextConfirmPassword);
-        buttonChangePassword = findViewById(R.id.buttonChangePassword);
+        etCurrentPassword = findViewById(R.id.etCurrentPassword);
+        etNewPassword = findViewById(R.id.etNewPassword);
+        etConfirmPassword = findViewById(R.id.etConfirmPassword);
+        btnChangePassword = findViewById(R.id.btnChangePassword);
         progressBar = findViewById(R.id.progressBar);
 
-        buttonChangePassword.setOnClickListener(new View.OnClickListener() {
+        btnChangePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 changePassword();
@@ -46,9 +46,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
     private void changePassword() {
-        String currentPassword = editTextCurrentPassword.getText().toString().trim();
-        String newPassword = editTextNewPassword.getText().toString().trim();
-        String confirmPassword = editTextConfirmPassword.getText().toString().trim();
+        String currentPassword = etCurrentPassword.getText().toString().trim();
+        String newPassword = etNewPassword.getText().toString().trim();
+        String confirmPassword = etConfirmPassword.getText().toString().trim();
 
         if (currentPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
             Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
