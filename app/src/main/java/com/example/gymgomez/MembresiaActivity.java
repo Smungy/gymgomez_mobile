@@ -64,7 +64,7 @@ public class MembresiaActivity extends AppCompatActivity {
 
                     tvTipo.setText("" + tipoText);
                     tvFechaInicio.setText("" + fechaInicio);
-                    tvFechaFin.setText("Fecha de vencimiento: " + fechaFin);
+                    tvFechaFin.setText("" + fechaFin);
 
 
                     if (tvEstado != null && membresia.getEstado() != null) {
