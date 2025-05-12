@@ -62,17 +62,17 @@ public class MembresiaActivity extends AppCompatActivity {
                     String fechaInicio = membresia.getFechaInscripcion() != null ? membresia.getFechaInscripcion() : "No disponible";
                     String fechaFin = membresia.getFechaVencimiento() != null ? membresia.getFechaVencimiento() : "No disponible";
 
-                    tvTipo.setText("Tipo de membresía: " + tipoText);
-                    tvFechaInicio.setText("Fecha de inscripción: " + fechaInicio);
+                    tvTipo.setText("" + tipoText);
+                    tvFechaInicio.setText("" + fechaInicio);
                     tvFechaFin.setText("Fecha de vencimiento: " + fechaFin);
 
 
                     if (tvEstado != null && membresia.getEstado() != null) {
-                        tvEstado.setText("Estado: " + membresia.getEstado());
+                        tvEstado.setText("" + membresia.getEstado());
                     }
 
                     if (tvDiasRestantes != null) {
-                        tvDiasRestantes.setText("Días restantes: " + membresia.getDiasRestantes());
+                        tvDiasRestantes.setText("" + membresia.getDiasRestantes());
                     }
                 } else {
                     try {

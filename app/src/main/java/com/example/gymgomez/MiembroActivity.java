@@ -52,9 +52,9 @@ public class MiembroActivity extends AppCompatActivity {
                     MiembroResponse.Miembro miembro = responseData.getMiembro();
 
                     if (miembro != null) {
-                        tvId.setText("ID: " + miembro.getId());
-                        tvNombre.setText("Nombre: " + miembro.getNombre());
-                        tvApellido.setText("Apellido: " + miembro.getApellido());
+                        tvId.setText("" + miembro.getId());
+                        tvNombre.setText("" + miembro.getNombre());
+                        tvApellido.setText("" + miembro.getApellido());
                         // Mostrar más datos según la respuesta
                     } else {
                         Log.e("API_RESPONSE", "El objeto miembro es nulo");
