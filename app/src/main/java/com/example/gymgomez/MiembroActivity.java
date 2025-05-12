@@ -1,11 +1,17 @@
 package com.example.gymgomez;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.gymgomez.modelos.MiembroResponse;
@@ -19,25 +25,51 @@ public class MiembroActivity extends AppCompatActivity {
     private TextView tvId;
     private TextView tvNombre;
     private TextView tvApellido;
-    // Más TextViews según la respuesta de la API
+    private ImageView imgFotoMiembro;
+    private Button btnSubirFoto;
+
+    private static final int PICK_IMAGE = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_miembro);
 
+        // Inicialización de vistas
         tvId = findViewById(R.id.tvId);
         tvNombre = findViewById(R.id.tvNombre);
         tvApellido = findViewById(R.id.tvApellido);
+        imgFotoMiembro = findViewById(R.id.imgFotoMiembro); // Asegúrate que este ID exista en el XML
+        btnSubirFoto = findViewById(R.id.btnSubirFoto);
 
+        // Acción del botón para abrir galería
+        btnSubirFoto.setOnClickListener(v -> abrirGaleria());
+
+        // Cargar datos del miembro desde la API
         loadMiembroData();
+    }
+
+    private void abrirGaleria() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_IMAGE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri imagenSeleccionada = data.getData();
+            imgFotoMiembro.setImageURI(imagenSeleccionada);
+        }
     }
 
     private void loadMiembroData() {
         SharedPreferences preferences = getSharedPreferences("gym_app", MODE_PRIVATE);
         String token = preferences.getString("token", "");
 
-        // Aseguramos que el token tenga el prefijo "Bearer "
         if (!token.startsWith("Bearer ")) {
             token = "Bearer " + token;
         }
@@ -55,7 +87,6 @@ public class MiembroActivity extends AppCompatActivity {
                         tvId.setText("" + miembro.getId());
                         tvNombre.setText("" + miembro.getNombre());
                         tvApellido.setText("" + miembro.getApellido());
-                        // Mostrar más datos según la respuesta
                     } else {
                         Log.e("API_RESPONSE", "El objeto miembro es nulo");
                         Toast.makeText(MiembroActivity.this, "Datos de miembro no encontrados", Toast.LENGTH_SHORT).show();
